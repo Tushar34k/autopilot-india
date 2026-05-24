@@ -5,6 +5,7 @@ export default function LandingPage() {
   const [hours, setHours] = useState(0);
   const [biz, setBiz] = useState(0);
   const [flipped, setFlipped] = useState({});
+  const [notif, setNotif] = useState({ visible: false, index: 0 });
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -28,6 +29,23 @@ export default function LandingPage() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // Rotating social-proof notification
+  useEffect(() => {
+    let showTimer, hideTimer;
+    const cycle = (idx) => {
+      setNotif({ visible: true, index: idx });
+      hideTimer = setTimeout(() => {
+        setNotif({ visible: false, index: idx });
+        showTimer = setTimeout(() => cycle((idx + 1) % 3), 4000);
+      }, 5000);
+    };
+    showTimer = setTimeout(() => cycle(0), 6000);
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   const scrollToForm = (e) => {
@@ -514,6 +532,38 @@ export default function LandingPage() {
           © {new Date().getFullYear()} AutoPilot AI. All rights reserved.
         </div>
       </footer>
+
+      {/* Rotating social-proof notification */}
+      {(() => {
+        const proofs = [
+          { name: "Ravi", city: "Pune" },
+          { name: "Ananya", city: "Bengaluru" },
+          { name: "Karan", city: "Mumbai" },
+        ];
+        const p = proofs[notif.index];
+        return (
+          <div
+            role="status"
+            aria-live="polite"
+            className={`fixed bottom-5 left-5 sm:bottom-6 sm:left-6 z-50 max-w-xs transition-all duration-500 ${
+              notif.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+            }`}
+          >
+            <div className="flex items-center gap-3 bg-zinc-900/95 backdrop-blur border border-zinc-800 rounded-2xl px-4 py-3 shadow-2xl">
+              <span className="relative inline-flex h-2.5 w-2.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75 animate-ping" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#22c55e]" />
+              </span>
+              <div className="text-sm">
+                <div className="text-zinc-100">
+                  <span className="font-semibold">{p.name}</span> from {p.city} just booked a free audit
+                </div>
+                <div className="text-[11px] text-zinc-500 mt-0.5">2 min ago</div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Floating WhatsApp contact button */}
       <a
