@@ -537,10 +537,6 @@ export default function LandingPage() {
             <p className="mt-6 text-sm text-zinc-400 text-center">
               ⚡ We respond within 4 hours. No pitch. Just a genuine audit.
             </p>
-            {/* Form ID: Replace REPLACE_WITH_ID with your Formspree form ID */}
-            <p className="mt-2 text-[10px] text-zinc-700 text-center font-mono">
-              {/* dev note */} formspree id: REPLACE_WITH_ID
-            </p>
           </div>
         </div>
       </section>
