@@ -1207,8 +1207,8 @@ function DocumentsTab({ docs, setDocs, toast }) {
   const [docTab, setDocTab] = useState("agreement");
   const copy = (text) => { try { navigator.clipboard.writeText(text); toast("Copied to clipboard"); } catch { toast("Copy failed", "red"); } };
   const a = docs.agreement;
-  const setA = (key, value) => setDocs({ ...docs, agreement: { ...docs.agreement, [key]: value } });
-  const setLink = (key, value) => setDocs({ ...docs, paymentLinks: { ...docs.paymentLinks, [key]: value } });
+  const setA = (key, value) => setDocs((d) => ({ ...d, agreement: { ...d.agreement, [key]: value } }));
+  const setLink = (key, value) => setDocs((d) => ({ ...d, paymentLinks: { ...d.paymentLinks, [key]: value } }));
 
   const docTabs = [
     { id: "agreement", label: "Service Agreement" },
