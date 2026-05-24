@@ -9,7 +9,6 @@ export default function LandingPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [proofIdx, setProofIdx] = useState(0);
   const [form, setForm] = useState({
     name: "",
     businessType: "Real Estate",
