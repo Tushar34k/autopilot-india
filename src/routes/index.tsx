@@ -1,26 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
+// @ts-expect-error - JSX module per spec requirement
+import LandingPage from "../LandingPage.jsx";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: LandingPage,
+  head: () => ({
+    meta: [
+      { title: "AutoPilot AI — Your Business, Running 24/7 Without Hiring Anyone" },
+      {
+        name: "description",
+        content:
+          "AI automations for Indian SMBs. Replace manual work with 24/7 systems. ₹15,000/month automations that outperform a ₹20,000/month hire.",
+      },
+    ],
+  }),
 });
-
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
-}
