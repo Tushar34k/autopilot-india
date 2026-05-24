@@ -144,6 +144,7 @@ export default function LandingPage() {
               <a key={l.id} href={`#${l.id}`} onClick={scrollTo(l.id)} className="hover:text-[#22c55e] transition-colors">
                 {l.label}
               </a>
+            ))}
             <a href="/dashboard" className="text-zinc-500 hover:text-zinc-200 transition-colors text-xs tracking-wide">
               → Dashboard
             </a>
