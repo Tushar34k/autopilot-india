@@ -522,7 +522,7 @@ function Dashboard() {
       <main className="max-w-7xl mx-auto px-5 py-8">
         {tab === "Overview" && (
           <OverviewTab
-            leads={leads} clients={clients} outreach={outreach}
+            leads={leads} clients={clients} outreach={outreach} content={content}
             activity={activity} onTab={setTab}
             onAddLead={(l) => { setLeads((s) => [l, ...s]); logActivity("➕", `New lead: ${l.name}`); showToast("Lead added"); }}
             onLogOutreach={(o) => { setOutreach((s) => [o, ...s]); logActivity("📤", `Outreach to ${o.name}`); showToast("Outreach logged"); }}
