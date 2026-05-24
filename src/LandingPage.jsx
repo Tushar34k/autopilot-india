@@ -67,9 +67,27 @@ export default function LandingPage() {
 
   const toggleFlip = (k) => setFlipped((s) => ({ ...s, [k]: !s[k] }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      const response = await fetch("https://formspree.io/f/REPLACE_WITH_ID", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (response.ok) {
+        setSubmitted(true);
+        setForm({ name: "", businessType: "Real Estate", task: "", whatsapp: "" });
+      } else {
+        setError("Something went wrong. Please try WhatsApp instead.");
+      }
+    } catch {
+      setError("Something went wrong. Please try WhatsApp instead.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const navLinks = [
