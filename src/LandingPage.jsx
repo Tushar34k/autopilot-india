@@ -72,7 +72,7 @@ export default function LandingPage() {
     setSubmitting(true);
     setError("");
     try {
-      const response = await fetch("https://formspree.io/f/REPLACE_WITH_ID", {
+      const response = await fetch("https://formspree.io/f/YOUR_REAL_ID_HERE", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(form),
