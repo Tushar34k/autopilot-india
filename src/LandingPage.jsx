@@ -144,7 +144,9 @@ export default function LandingPage() {
               <a key={l.id} href={`#${l.id}`} onClick={scrollTo(l.id)} className="hover:text-[#22c55e] transition-colors">
                 {l.label}
               </a>
-            ))}
+            <a href="/dashboard" className="text-zinc-500 hover:text-zinc-200 transition-colors text-xs tracking-wide">
+              → Dashboard
+            </a>
             <button onClick={scrollToForm} className="bg-[#22c55e] hover:bg-[#16a34a] text-black font-semibold px-4 py-2 rounded-full text-sm transition-colors">
               Get Free Audit
             </button>
