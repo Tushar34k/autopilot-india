@@ -7,11 +7,14 @@ export default function LandingPage() {
   const [flipped, setFlipped] = useState({});
   const [notif, setNotif] = useState({ visible: false, index: 0 });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [proofIdx, setProofIdx] = useState(0);
   const [form, setForm] = useState({
     name: "",
-    type: "Real Estate",
+    businessType: "Real Estate",
     task: "",
-    phone: "",
+    whatsapp: "",
   });
   const formRef = useRef(null);
 
