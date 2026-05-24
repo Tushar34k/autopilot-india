@@ -5,6 +5,7 @@ export default function LandingPage() {
   const [hours, setHours] = useState(0);
   const [biz, setBiz] = useState(0);
   const [flipped, setFlipped] = useState({});
+  const [notif, setNotif] = useState({ visible: false, index: 0 });
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: "",
