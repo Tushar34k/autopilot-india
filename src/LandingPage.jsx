@@ -624,9 +624,9 @@ export default function LandingPage() {
       {/* Rotating social-proof notification */}
       {(() => {
         const proofs = [
-          { name: "Ravi", city: "Pune" },
-          { name: "Ananya", city: "Bengaluru" },
-          { name: "Karan", city: "Mumbai" },
+          "Ravi from Pune just booked a free audit · 3 min ago",
+          "Priya from Mumbai requested a workflow audit · 7 min ago",
+          "Arjun from Bangalore booked a discovery call · 12 min ago",
         ];
         const p = proofs[notif.index];
         return (
@@ -637,17 +637,19 @@ export default function LandingPage() {
               notif.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
             }`}
           >
-            <div className="flex items-center gap-3 bg-zinc-900/95 backdrop-blur border border-zinc-800 rounded-2xl px-4 py-3 shadow-2xl">
-              <span className="relative inline-flex h-2.5 w-2.5 shrink-0">
+            <div className="flex items-start gap-3 bg-[#18181b] backdrop-blur border border-[#27272a] rounded-2xl px-4 py-3 shadow-2xl">
+              <span className="relative inline-flex h-2.5 w-2.5 shrink-0 mt-1.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75 animate-ping" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#22c55e]" />
               </span>
-              <div className="text-sm">
-                <div className="text-zinc-100">
-                  <span className="font-semibold">{p.name}</span> from {p.city} just booked a free audit
-                </div>
-                <div className="text-[11px] text-zinc-500 mt-0.5">2 min ago</div>
-              </div>
+              <div className="text-sm text-zinc-100 leading-snug pr-2">{p}</div>
+              <button
+                onClick={dismissNotif}
+                aria-label="Dismiss"
+                className="text-zinc-500 hover:text-zinc-200 text-lg leading-none shrink-0"
+              >
+                ×
+              </button>
             </div>
           </div>
         );
@@ -655,17 +657,21 @@ export default function LandingPage() {
 
       {/* Floating WhatsApp contact button */}
       <a
-        href="https://wa.me/91XXXXXXXXXX"
+        href="https://wa.me/919999999999"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 h-14 w-14 rounded-full flex items-center justify-center text-white shadow-[0_8px_30px_rgba(37,211,102,0.5)] hover:scale-110 transition-transform"
-        style={{ backgroundColor: "#25D366", animation: "wa-bounce 5s ease-in-out infinite" }}
+        title="Chat on WhatsApp"
+        className="group fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 h-14 w-14 rounded-full flex items-center justify-center text-white shadow-[0_8px_30px_rgba(37,211,102,0.5)] hover:scale-110 transition-transform"
+        style={{ backgroundColor: "#25D366", animation: "wa-bounce 6s ease-in-out infinite" }}
       >
         <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-60 animate-ping" style={{ animationDuration: "2.5s" }} />
         <svg viewBox="0 0 32 32" width="28" height="28" fill="currentColor" className="relative">
           <path d="M19.11 17.36c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.07 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM16 3C8.83 3 3 8.83 3 16c0 2.28.6 4.49 1.75 6.45L3 29l6.74-1.71A12.9 12.9 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5c-1.95 0-3.86-.52-5.53-1.5l-.4-.24-4 1.01 1.07-3.9-.26-.4A10.46 10.46 0 0 1 5.5 16C5.5 10.21 10.21 5.5 16 5.5S26.5 10.21 26.5 16 21.79 26.5 16 26.5z"/>
         </svg>
+        <span className="pointer-events-none absolute right-16 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#18181b] border border-[#27272a] px-3 py-1.5 text-xs text-zinc-100 opacity-0 group-hover:opacity-100 transition-opacity">
+          Chat on WhatsApp
+        </span>
         <style>{`
           @keyframes wa-bounce {
             0%, 85%, 100% { transform: translateY(0); }
