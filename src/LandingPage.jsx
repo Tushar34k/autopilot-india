@@ -464,9 +464,9 @@ export default function LandingPage() {
             {submitted ? (
               <div className="mt-10 border border-[#22c55e] bg-[#22c55e]/10 rounded-2xl p-8 text-center">
                 <div className="text-4xl">✓</div>
-                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Audit request received</div>
+                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Received! We'll WhatsApp you within 4 hours.</div>
                 <p className="mt-2 text-zinc-300">
-                  Thanks {form.name || "there"} — we'll reach you on WhatsApp within 4 hours with your free workflow breakdown.
+                  Your free workflow breakdown is on its way.
                 </p>
               </div>
             ) : (
@@ -484,8 +484,8 @@ export default function LandingPage() {
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Business Type</label>
                   <select
-                    value={form.type}
-                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    value={form.businessType}
+                    onChange={(e) => setForm({ ...form, businessType: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                   >
                     <option>Real Estate</option>
@@ -511,15 +511,24 @@ export default function LandingPage() {
                   <input
                     required
                     type="tel"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    value={form.whatsapp}
+                    onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="+91 98xxxxxxxx"
                   />
                 </div>
+                {error && (
+                  <div className="sm:col-span-2 border border-[#ef4444]/40 bg-[#ef4444]/10 rounded-xl px-4 py-3 text-sm text-[#ef4444]">
+                    {error}
+                  </div>
+                )}
                 <div className="sm:col-span-2">
-                  <button type="submit" className="w-full bg-[#22c55e] hover:bg-[#16a34a] text-black font-bold py-4 rounded-xl text-lg transition-colors shadow-[0_0_40px_-10px_#22c55e]">
-                    Request My Free Audit
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full bg-[#22c55e] hover:bg-[#16a34a] disabled:opacity-60 disabled:cursor-not-allowed text-black font-bold py-4 rounded-xl text-lg transition-colors shadow-[0_0_40px_-10px_#22c55e]"
+                  >
+                    {submitting ? "Sending…" : "Request My Free Audit"}
                   </button>
                 </div>
               </form>
@@ -527,6 +536,10 @@ export default function LandingPage() {
 
             <p className="mt-6 text-sm text-zinc-400 text-center">
               ⚡ We respond within 4 hours. No pitch. Just a genuine audit.
+            </p>
+            {/* Form ID: Replace REPLACE_WITH_ID with your Formspree form ID */}
+            <p className="mt-2 text-[10px] text-zinc-700 text-center font-mono">
+              {/* dev note */} formspree id: REPLACE_WITH_ID
             </p>
           </div>
         </div>
