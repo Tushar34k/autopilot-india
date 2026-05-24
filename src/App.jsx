@@ -589,7 +589,7 @@ function Dashboard() {
 // ============================================================
 // TAB 1 — OVERVIEW
 // ============================================================
-function OverviewTab({ leads, clients, outreach, activity, onTab, onAddLead, onLogOutreach }) {
+function OverviewTab({ leads, clients, outreach, content, activity, onTab, onAddLead, onLogOutreach }) {
   const [leadOpen, setLeadOpen] = useState(false);
   const [outOpen, setOutOpen] = useState(false);
 
