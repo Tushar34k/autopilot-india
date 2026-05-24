@@ -506,6 +506,55 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="max-w-4xl mx-auto px-5 sm:px-8 py-20 sm:py-28 border-t border-zinc-900">
+        <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
+          Questions, <span className="text-[#22c55e]">Honestly Answered</span>
+        </h2>
+        <p className="mt-3 text-zinc-400">No fluff. If you're still unsure, just book the free audit.</p>
+
+        <div className="mt-10 divide-y divide-zinc-800 border-y border-zinc-800">
+          {[
+            {
+              q: "How long does setup take?",
+              a: "Most Starter automations go live in 3 days. Growth stacks take 7–10 days. Scale projects run 2–3 weeks because we train custom logic on your business data. You'll get a clear timeline before you pay anything.",
+            },
+            {
+              q: "Do I need technical knowledge?",
+              a: "No. If you can use WhatsApp and Google Sheets, you're set. We build, host, and maintain everything. You get a simple dashboard and a WhatsApp line to ping us if anything looks off.",
+            },
+            {
+              q: "What if the automation breaks?",
+              a: "We monitor every workflow 24/7. If something fails, we get an alert before you do — and fixes are included in your monthly retainer. No surprise invoices, no finger-pointing.",
+            },
+            {
+              q: "Can I cancel anytime?",
+              a: "Yes. 30 days written notice and we hand over everything — credentials, workflows, documentation. No lock-in clauses, no exit fees. We'd rather you stay because it works, not because you're stuck.",
+            },
+            {
+              q: "Do you work with small businesses under 10 people?",
+              a: "That's most of our clients. A 4-person real estate team or a 2-founder D2C brand gets more ROI from automation than a 50-person company, because every hour saved goes straight to growth.",
+            },
+            {
+              q: "What tools do you connect with?",
+              a: "WhatsApp Business, Instagram, Gmail, Google Sheets, Shopify, 99acres, MagicBricks, Razorpay, Tally, Zoho, HubSpot, Notion, Airtable, and most CRMs with an API. If it has a webhook, we can wire it in.",
+            },
+          ].map((item, i) => (
+            <details key={i} className="group py-5 cursor-pointer">
+              <summary className="flex items-center justify-between gap-4 list-none">
+                <span className="font-semibold text-base sm:text-lg text-zinc-100 group-hover:text-[#22c55e] transition-colors">
+                  {item.q}
+                </span>
+                <span className="shrink-0 h-8 w-8 rounded-full border border-zinc-700 flex items-center justify-center text-[#22c55e] transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-zinc-400 leading-relaxed text-sm sm:text-base">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="border-t border-zinc-900 px-5 sm:px-8 py-12">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 justify-between">
