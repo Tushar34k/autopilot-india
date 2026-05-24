@@ -31,6 +31,23 @@ export default function LandingPage() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  // Rotating social-proof notification
+  useEffect(() => {
+    let showTimer, hideTimer;
+    const cycle = (idx) => {
+      setNotif({ visible: true, index: idx });
+      hideTimer = setTimeout(() => {
+        setNotif({ visible: false, index: idx });
+        showTimer = setTimeout(() => cycle((idx + 1) % 3), 4000);
+      }, 5000);
+    };
+    showTimer = setTimeout(() => cycle(0), 6000);
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, []);
+
   const scrollToForm = (e) => {
     if (e) e.preventDefault();
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
