@@ -39,16 +39,19 @@ export default function LandingPage() {
     const cycle = (idx) => {
       setNotif({ visible: true, index: idx });
       hideTimer = setTimeout(() => {
-        setNotif({ visible: false, index: idx });
-        showTimer = setTimeout(() => cycle((idx + 1) % 3), 4000);
-      }, 5000);
+        setNotif((s) => ({ visible: false, index: s.index }));
+        showTimer = setTimeout(() => cycle((idx + 1) % 3), 15000);
+      }, 6000);
     };
-    showTimer = setTimeout(() => cycle(0), 6000);
+    showTimer = setTimeout(() => cycle(0), 8000);
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
     };
   }, []);
+
+  const dismissNotif = () => setNotif((s) => ({ visible: false, index: s.index }));
+
 
   const scrollToForm = (e) => {
     if (e) e.preventDefault();
