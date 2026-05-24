@@ -7,11 +7,13 @@ export default function LandingPage() {
   const [flipped, setFlipped] = useState({});
   const [notif, setNotif] = useState({ visible: false, index: 0 });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
-    type: "Real Estate",
+    businessType: "Real Estate",
     task: "",
-    phone: "",
+    whatsapp: "",
   });
   const formRef = useRef(null);
 
@@ -37,16 +39,19 @@ export default function LandingPage() {
     const cycle = (idx) => {
       setNotif({ visible: true, index: idx });
       hideTimer = setTimeout(() => {
-        setNotif({ visible: false, index: idx });
-        showTimer = setTimeout(() => cycle((idx + 1) % 3), 4000);
-      }, 5000);
+        setNotif((s) => ({ visible: false, index: s.index }));
+        showTimer = setTimeout(() => cycle((idx + 1) % 3), 15000);
+      }, 6000);
     };
-    showTimer = setTimeout(() => cycle(0), 6000);
+    showTimer = setTimeout(() => cycle(0), 8000);
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
     };
   }, []);
+
+  const dismissNotif = () => setNotif((s) => ({ visible: false, index: s.index }));
+
 
   const scrollToForm = (e) => {
     if (e) e.preventDefault();
@@ -62,9 +67,27 @@ export default function LandingPage() {
 
   const toggleFlip = (k) => setFlipped((s) => ({ ...s, [k]: !s[k] }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      const response = await fetch("https://formspree.io/f/REPLACE_WITH_ID", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (response.ok) {
+        setSubmitted(true);
+        setForm({ name: "", businessType: "Real Estate", task: "", whatsapp: "" });
+      } else {
+        setError("Something went wrong. Please try WhatsApp instead.");
+      }
+    } catch {
+      setError("Something went wrong. Please try WhatsApp instead.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const navLinks = [
@@ -122,6 +145,9 @@ export default function LandingPage() {
                 {l.label}
               </a>
             ))}
+            <a href="/dashboard" className="text-zinc-500 hover:text-zinc-200 transition-colors text-xs tracking-wide">
+              → Dashboard
+            </a>
             <button onClick={scrollToForm} className="bg-[#22c55e] hover:bg-[#16a34a] text-black font-semibold px-4 py-2 rounded-full text-sm transition-colors">
               Get Free Audit
             </button>
@@ -438,9 +464,9 @@ export default function LandingPage() {
             {submitted ? (
               <div className="mt-10 border border-[#22c55e] bg-[#22c55e]/10 rounded-2xl p-8 text-center">
                 <div className="text-4xl">✓</div>
-                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Audit request received</div>
+                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Received! We'll WhatsApp you within 4 hours.</div>
                 <p className="mt-2 text-zinc-300">
-                  Thanks {form.name || "there"} — we'll reach you on WhatsApp within 4 hours with your free workflow breakdown.
+                  Your free workflow breakdown is on its way.
                 </p>
               </div>
             ) : (
@@ -458,8 +484,8 @@ export default function LandingPage() {
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Business Type</label>
                   <select
-                    value={form.type}
-                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    value={form.businessType}
+                    onChange={(e) => setForm({ ...form, businessType: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                   >
                     <option>Real Estate</option>
@@ -485,15 +511,24 @@ export default function LandingPage() {
                   <input
                     required
                     type="tel"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    value={form.whatsapp}
+                    onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="+91 98xxxxxxxx"
                   />
                 </div>
+                {error && (
+                  <div className="sm:col-span-2 border border-[#ef4444]/40 bg-[#ef4444]/10 rounded-xl px-4 py-3 text-sm text-[#ef4444]">
+                    {error}
+                  </div>
+                )}
                 <div className="sm:col-span-2">
-                  <button type="submit" className="w-full bg-[#22c55e] hover:bg-[#16a34a] text-black font-bold py-4 rounded-xl text-lg transition-colors shadow-[0_0_40px_-10px_#22c55e]">
-                    Request My Free Audit
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full bg-[#22c55e] hover:bg-[#16a34a] disabled:opacity-60 disabled:cursor-not-allowed text-black font-bold py-4 rounded-xl text-lg transition-colors shadow-[0_0_40px_-10px_#22c55e]"
+                  >
+                    {submitting ? "Sending…" : "Request My Free Audit"}
                   </button>
                 </div>
               </form>
@@ -501,6 +536,10 @@ export default function LandingPage() {
 
             <p className="mt-6 text-sm text-zinc-400 text-center">
               ⚡ We respond within 4 hours. No pitch. Just a genuine audit.
+            </p>
+            {/* Form ID: Replace REPLACE_WITH_ID with your Formspree form ID */}
+            <p className="mt-2 text-[10px] text-zinc-700 text-center font-mono">
+              {/* dev note */} formspree id: REPLACE_WITH_ID
             </p>
           </div>
         </div>
@@ -585,9 +624,9 @@ export default function LandingPage() {
       {/* Rotating social-proof notification */}
       {(() => {
         const proofs = [
-          { name: "Ravi", city: "Pune" },
-          { name: "Ananya", city: "Bengaluru" },
-          { name: "Karan", city: "Mumbai" },
+          "Ravi from Pune just booked a free audit · 3 min ago",
+          "Priya from Mumbai requested a workflow audit · 7 min ago",
+          "Arjun from Bangalore booked a discovery call · 12 min ago",
         ];
         const p = proofs[notif.index];
         return (
@@ -598,17 +637,19 @@ export default function LandingPage() {
               notif.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
             }`}
           >
-            <div className="flex items-center gap-3 bg-zinc-900/95 backdrop-blur border border-zinc-800 rounded-2xl px-4 py-3 shadow-2xl">
-              <span className="relative inline-flex h-2.5 w-2.5 shrink-0">
+            <div className="flex items-start gap-3 bg-[#18181b] backdrop-blur border border-[#27272a] rounded-2xl px-4 py-3 shadow-2xl">
+              <span className="relative inline-flex h-2.5 w-2.5 shrink-0 mt-1.5">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75 animate-ping" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#22c55e]" />
               </span>
-              <div className="text-sm">
-                <div className="text-zinc-100">
-                  <span className="font-semibold">{p.name}</span> from {p.city} just booked a free audit
-                </div>
-                <div className="text-[11px] text-zinc-500 mt-0.5">2 min ago</div>
-              </div>
+              <div className="text-sm text-zinc-100 leading-snug pr-2">{p}</div>
+              <button
+                onClick={dismissNotif}
+                aria-label="Dismiss"
+                className="text-zinc-500 hover:text-zinc-200 text-lg leading-none shrink-0"
+              >
+                ×
+              </button>
             </div>
           </div>
         );
@@ -616,17 +657,21 @@ export default function LandingPage() {
 
       {/* Floating WhatsApp contact button */}
       <a
-        href="https://wa.me/91XXXXXXXXXX"
+        href="https://wa.me/919999999999"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 h-14 w-14 rounded-full flex items-center justify-center text-white shadow-[0_8px_30px_rgba(37,211,102,0.5)] hover:scale-110 transition-transform"
-        style={{ backgroundColor: "#25D366", animation: "wa-bounce 5s ease-in-out infinite" }}
+        title="Chat on WhatsApp"
+        className="group fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 h-14 w-14 rounded-full flex items-center justify-center text-white shadow-[0_8px_30px_rgba(37,211,102,0.5)] hover:scale-110 transition-transform"
+        style={{ backgroundColor: "#25D366", animation: "wa-bounce 6s ease-in-out infinite" }}
       >
         <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-60 animate-ping" style={{ animationDuration: "2.5s" }} />
         <svg viewBox="0 0 32 32" width="28" height="28" fill="currentColor" className="relative">
           <path d="M19.11 17.36c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.07 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM16 3C8.83 3 3 8.83 3 16c0 2.28.6 4.49 1.75 6.45L3 29l6.74-1.71A12.9 12.9 0 0 0 16 29c7.17 0 13-5.83 13-13S23.17 3 16 3zm0 23.5c-1.95 0-3.86-.52-5.53-1.5l-.4-.24-4 1.01 1.07-3.9-.26-.4A10.46 10.46 0 0 1 5.5 16C5.5 10.21 10.21 5.5 16 5.5S26.5 10.21 26.5 16 21.79 26.5 16 26.5z"/>
         </svg>
+        <span className="pointer-events-none absolute right-16 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#18181b] border border-[#27272a] px-3 py-1.5 text-xs text-zinc-100 opacity-0 group-hover:opacity-100 transition-opacity">
+          Chat on WhatsApp
+        </span>
         <style>{`
           @keyframes wa-bounce {
             0%, 85%, 100% { transform: translateY(0); }
