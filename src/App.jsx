@@ -598,6 +598,43 @@ function OverviewTab({ leads, clients, outreach, activity, onTab, onAddLead, onL
   const weekAgo = (() => { const d = new Date(); d.setDate(d.getDate() - 7); return d.toISOString().slice(0, 10); })();
   const thisWeekOutreach = outreach.filter((o) => o.date >= weekAgo).length;
 
+  // --- Daily Briefing ---
+  const today = todayISO();
+  const todayCount = outreach.filter((o) => o.date === today).length;
+  const goal = 10;
+  const goalPct = Math.min(100, Math.round((todayCount / goal) * 100));
+
+  // Next follow-up: lead with oldest lastContact among leads not yet converted
+  const openLeads = leads
+    .filter((l) => l.status && l.status !== "Client" && l.status !== "Lost")
+    .filter((l) => l.lastContact)
+    .sort((a, b) => (a.lastContact < b.lastContact ? -1 : 1));
+  const nextLead = openLeads[0];
+  const nextFollowDate = nextLead ? (() => {
+    const d = new Date(nextLead.lastContact);
+    d.setDate(d.getDate() + 3);
+    return d.toISOString().slice(0, 10);
+  })() : null;
+  const followStatus = (() => {
+    if (!nextFollowDate) return { label: "All caught up", color: C.green };
+    if (nextFollowDate < today) return { label: "Overdue", color: "#ef4444" };
+    if (nextFollowDate === today) return { label: "Due today", color: C.orange };
+    return { label: "Upcoming", color: C.green };
+  })();
+
+  // Random content reminder — stable for the day
+  const readyContent = (content || []).filter((p) => p.status !== "Posted");
+  const contentPool = readyContent.length ? readyContent : (content || []);
+  const dayIdx = (() => {
+    const d = new Date(today);
+    return Math.floor(d.getTime() / 86400000);
+  })();
+  const contentPick = contentPool.length ? contentPool[dayIdx % contentPool.length] : null;
+
+  const dateStr = new Date(today + "T00:00:00").toLocaleDateString("en-IN", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
+
   const cards = [
     { label: "Total Leads", value: leads.length, accent: C.green },
     { label: "Active Clients", value: activeClients.length, accent: C.green },
@@ -607,6 +644,100 @@ function OverviewTab({ leads, clients, outreach, activity, onTab, onAddLead, onL
 
   return (
     <div className="space-y-8">
+      {/* Daily Briefing */}
+      <div
+        className="rounded-2xl border p-6 relative overflow-hidden"
+        style={{
+          background: `linear-gradient(135deg, ${C.card} 0%, rgba(34,197,94,0.06) 100%)`,
+          borderColor: C.border,
+        }}
+      >
+        <div
+          className="pointer-events-none absolute -top-20 -right-20 h-60 w-60 rounded-full blur-3xl opacity-20"
+          style={{ background: C.green }}
+        />
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.25em] text-zinc-500">Daily Briefing</div>
+            <div className="mt-1 text-xl font-semibold">{dateStr}</div>
+          </div>
+          <span
+            className="text-[11px] uppercase tracking-widest px-2.5 py-1 rounded-md border"
+            style={{ color: C.green, borderColor: "rgba(34,197,94,0.4)", background: "rgba(34,197,94,0.08)" }}
+          >
+            Live
+          </span>
+        </div>
+
+        <div className="mt-5 grid md:grid-cols-3 gap-4 relative">
+          {/* Outreach goal */}
+          <div className="rounded-xl border p-4" style={{ borderColor: C.border, background: "rgba(0,0,0,0.25)" }}>
+            <div className="flex items-center gap-2 text-xs text-zinc-400">
+              <span>📤</span><span className="uppercase tracking-wider">Today's Outreach</span>
+            </div>
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <span className="text-3xl font-bold" style={{ color: todayCount >= goal ? C.green : C.text }}>{todayCount}</span>
+              <span className="text-zinc-500 text-sm">/ {goal}</span>
+            </div>
+            <div className="mt-3 h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+              <div
+                className="h-full transition-all duration-500"
+                style={{ width: `${goalPct}%`, background: todayCount >= goal ? C.green : C.orange }}
+              />
+            </div>
+            <div className="mt-2 text-[11px] text-zinc-500">
+              {todayCount >= goal ? "Goal hit. Nice." : `${goal - todayCount} to go`}
+            </div>
+          </div>
+
+          {/* Next follow-up */}
+          <div className="rounded-xl border p-4" style={{ borderColor: C.border, background: "rgba(0,0,0,0.25)" }}>
+            <div className="flex items-center gap-2 text-xs text-zinc-400">
+              <span>⏰</span><span className="uppercase tracking-wider">Next Follow-up</span>
+            </div>
+            {nextLead ? (
+              <>
+                <div className="mt-2 text-base font-semibold truncate">{nextLead.name}</div>
+                <div className="text-xs text-zinc-500 truncate">{nextLead.business}</div>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-xs text-zinc-400">{nextFollowDate}</span>
+                  <span
+                    className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded border"
+                    style={{ color: followStatus.color, borderColor: followStatus.color + "55" }}
+                  >
+                    {followStatus.label}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="mt-2 text-sm text-zinc-500">No open leads to follow up.</div>
+            )}
+          </div>
+
+          {/* Content reminder */}
+          <div className="rounded-xl border p-4" style={{ borderColor: C.border, background: "rgba(0,0,0,0.25)" }}>
+            <div className="flex items-center gap-2 text-xs text-zinc-400">
+              <span>✍️</span><span className="uppercase tracking-wider">Post Today</span>
+            </div>
+            {contentPick ? (
+              <>
+                <div className="mt-2 text-base font-semibold line-clamp-2">{contentPick.title}</div>
+                <div className="text-xs text-zinc-500 mt-1">{contentPick.platform} · {contentPick.status}</div>
+                <button
+                  onClick={() => onTab("Content")}
+                  className="mt-2 text-xs font-medium hover:underline"
+                  style={{ color: C.green }}
+                >
+                  Open content →
+                </button>
+              </>
+            ) : (
+              <div className="mt-2 text-sm text-zinc-500">No content posts saved yet.</div>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((c) => (
           <div key={c.label} className="rounded-2xl border p-5" style={{ background: C.card, borderColor: C.border }}>
@@ -615,6 +746,7 @@ function OverviewTab({ leads, clients, outreach, activity, onTab, onAddLead, onL
           </div>
         ))}
       </div>
+
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 rounded-2xl border p-5" style={{ background: C.card, borderColor: C.border }}>
