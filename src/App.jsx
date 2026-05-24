@@ -301,46 +301,135 @@ function PinGate({ onUnlock }) {
   const [err, setErr] = useState(false);
   const [shake, setShake] = useState(false);
 
-  const submit = (e) => {
-    e.preventDefault();
-    if (pin === "2626") {
+  const tryUnlock = (value) => {
+    if (value === "2626") {
       try { sessionStorage.setItem("autopilot_unlocked", "1"); } catch {}
       onUnlock();
     } else {
       setErr(true);
       setShake(true);
-      setTimeout(() => setShake(false), 500);
+      setTimeout(() => { setShake(false); setPin(""); }, 600);
     }
   };
 
+  const press = (d) => {
+    setErr(false);
+    setPin((p) => {
+      if (p.length >= 4) return p;
+      const next = p + d;
+      if (next.length === 4) setTimeout(() => tryUnlock(next), 120);
+      return next;
+    });
+  };
+  const backspace = () => { setErr(false); setPin((p) => p.slice(0, -1)); };
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (/^[0-9]$/.test(e.key)) press(e.key);
+      else if (e.key === "Backspace") backspace();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const keys = ["1","2","3","4","5","6","7","8","9","","0","⌫"];
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 font-mono" style={{ background: C.bg, color: C.text }}>
-      <style>{`@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}.shake{animation:shake .45s ease}`}</style>
-      <form
-        onSubmit={submit}
-        className={`w-full max-w-sm rounded-2xl border p-8 ${shake ? "shake" : ""}`}
-        style={{ background: C.card, borderColor: C.border }}
+    <div
+      className="min-h-screen flex items-center justify-center px-4 font-mono relative overflow-hidden"
+      style={{ background: C.bg, color: C.text }}
+    >
+      <style>{`
+        @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+        .shake{animation:shake .5s ease}
+        @keyframes pulseDot{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.12);opacity:1}}
+        .logo-pulse{animation:pulseDot 2.4s ease-in-out infinite}
+        @keyframes fillDot{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+        .dot-fill{animation:fillDot .18s ease-out}
+        .key-btn:active{transform:scale(.94)}
+      `}</style>
+
+      <div
+        className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full blur-3xl opacity-20"
+        style={{ background: C.green }}
+      />
+
+      <div
+        className={`relative w-full max-w-sm rounded-3xl border p-8 ${shake ? "shake" : ""}`}
+        style={{ background: C.card, borderColor: C.border, boxShadow: "0 30px 80px -20px rgba(0,0,0,.7)" }}
       >
-        <div className="flex items-center gap-2 justify-center">
-          <span className="h-2.5 w-2.5 rounded-full" style={{ background: C.green }} />
-          <span className="font-bold text-lg">AutoPilot AI</span>
+        <div className="flex flex-col items-center">
+          <div
+            className="h-14 w-14 rounded-2xl flex items-center justify-center logo-pulse"
+            style={{ background: "rgba(34,197,94,.12)", border: `1px solid ${C.green}` }}
+          >
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2 4 7v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V7l-8-5Z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div className="mt-4 font-bold text-lg tracking-tight">AutoPilot AI</div>
+          <div className="text-[11px] uppercase tracking-[0.25em] text-zinc-500 mt-1">Operations Hub</div>
         </div>
-        <h1 className="mt-6 text-xl font-semibold text-center">Enter PIN</h1>
-        <p className="text-center text-sm text-zinc-500 mt-1">Operations Hub access</p>
-        <input
-          type="password"
-          inputMode="numeric"
-          autoFocus
-          value={pin}
-          onChange={(e) => { setPin(e.target.value); setErr(false); }}
-          className="mt-6 w-full bg-[#09090b] border border-[#27272a] focus:border-[#22c55e] outline-none rounded-lg px-4 py-3 text-center text-2xl tracking-[0.5em]"
-          placeholder="••••"
-          maxLength={6}
-        />
-        {err && <div className="mt-3 text-sm text-center text-[#ef4444]">Incorrect PIN</div>}
-        <button type="submit" className={`${btnPrimary} w-full mt-6 py-3`}>Unlock</button>
-        <a href="/" className="block text-center text-xs text-zinc-500 hover:text-zinc-200 mt-4">← Back to site</a>
-      </form>
+
+        <h1 className="mt-7 text-center text-sm text-zinc-400">Enter your 4-digit PIN</h1>
+
+        <div className="mt-4 flex justify-center gap-4">
+          {[0,1,2,3].map((i) => {
+            const filled = i < pin.length;
+            return (
+              <div
+                key={i}
+                className="h-3.5 w-3.5 rounded-full border transition-colors"
+                style={{
+                  borderColor: err ? "#ef4444" : filled ? C.green : "#3f3f46",
+                  background: err ? "#ef4444" : filled ? C.green : "transparent",
+                }}
+              >
+                {filled && <div key={pin.length} className="h-full w-full rounded-full dot-fill" style={{ background: err ? "#ef4444" : C.green }} />}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="h-5 mt-3 text-center text-xs" style={{ color: err ? "#ef4444" : "transparent" }}>
+          Incorrect PIN — try again
+        </div>
+
+        <div className="mt-2 grid grid-cols-3 gap-3">
+          {keys.map((k, i) => {
+            if (k === "") return <div key={i} />;
+            if (k === "⌫") {
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={backspace}
+                  className="key-btn h-14 rounded-2xl border text-zinc-400 hover:text-white hover:border-zinc-600 transition flex items-center justify-center text-xl"
+                  style={{ borderColor: C.border, background: "#0a0a0a" }}
+                  aria-label="Delete"
+                >
+                  ⌫
+                </button>
+              );
+            }
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => press(k)}
+                className="key-btn h-14 rounded-2xl border text-xl font-semibold hover:border-zinc-500 transition"
+                style={{ borderColor: C.border, background: "#0a0a0a" }}
+              >
+                {k}
+              </button>
+            );
+          })}
+        </div>
+
+        <a href="/" className="block text-center text-xs text-zinc-500 hover:text-zinc-200 mt-6">← Back to site</a>
+      </div>
     </div>
   );
 }
