@@ -653,7 +653,7 @@ export default function LandingPage() {
 
       {/* Floating WhatsApp contact button */}
       <a
-        href="https://wa.me/919999999999"
+        href="https://wa.me/9421752757"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
