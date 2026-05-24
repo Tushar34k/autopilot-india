@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+// @ts-expect-error - JSX module per spec requirement
 import LandingPage from "../LandingPage.jsx";
 
 export const Route = createFileRoute("/")({
