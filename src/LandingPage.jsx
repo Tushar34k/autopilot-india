@@ -73,14 +73,20 @@ export default function LandingPage() {
     setSubmitting(true);
     setError("");
     try {
-      const response = await fetch("https://formspree.io/f/YOUR_REAL_ID_HERE", {
+      const response = await fetch("https://hook.eu1.make.com/01krcu3e9zrlosgnp3holjiakykt4m7v", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(form),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.whatsapp,
+          businessType: form.businessType,
+          message: form.task,
+        }),
       });
-      if (response.ok) {
+      if (response.ok || response.status === 200) {
         setSubmitted(true);
-        setForm({ name: "", businessType: "Real Estate", task: "", whatsapp: "" });
+        setForm({ name: "", email: "", businessType: "Real Estate", task: "", whatsapp: "" });
       } else {
         setError("Something went wrong. Please try WhatsApp instead.");
       }
