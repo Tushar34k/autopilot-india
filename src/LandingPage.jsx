@@ -210,6 +210,7 @@ export default function LandingPage() {
             <button onClick={scrollToForm} className="w-full bg-[#22c55e] text-black font-semibold py-2 rounded-full">
               Get Free Audit
             </button>
+            <BookingCTA location="navbar_mobile" className="w-full" />
           </div>
         )}
       </header>
