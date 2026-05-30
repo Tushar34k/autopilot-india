@@ -11,6 +11,7 @@ export default function LandingPage() {
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
+    email: "",
     businessType: "Real Estate",
     task: "",
     whatsapp: "",
@@ -72,14 +73,20 @@ export default function LandingPage() {
     setSubmitting(true);
     setError("");
     try {
-      const response = await fetch("https://formspree.io/f/YOUR_REAL_ID_HERE", {
+      const response = await fetch("https://hook.eu1.make.com/01krcu3e9zrlosgnp3holjiakykt4m7v", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(form),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.whatsapp,
+          businessType: form.businessType,
+          message: form.task,
+        }),
       });
-      if (response.ok) {
+      if (response.ok || response.status === 200) {
         setSubmitted(true);
-        setForm({ name: "", businessType: "Real Estate", task: "", whatsapp: "" });
+        setForm({ name: "", email: "", businessType: "Real Estate", task: "", whatsapp: "" });
       } else {
         setError("Something went wrong. Please try WhatsApp instead.");
       }
@@ -479,6 +486,17 @@ export default function LandingPage() {
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="Your full name"
+                  />
+                </div>
+                <div className="sm:col-span-1">
+                  <label className="text-xs text-zinc-400 uppercase tracking-widest">Email</label>
+                  <input
+                    required
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
+                    placeholder="you@company.com"
                   />
                 </div>
                 <div className="sm:col-span-1">
