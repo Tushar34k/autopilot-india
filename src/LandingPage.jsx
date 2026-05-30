@@ -250,6 +250,7 @@ export default function LandingPage() {
             <a href="#how" onClick={scrollTo("how")} className="border border-zinc-700 hover:border-[#22c55e] hover:text-[#22c55e] text-zinc-200 font-semibold px-6 py-3.5 rounded-full transition-colors text-center">
               See How It Works
             </a>
+            <BookingCTA location="hero" />
           </div>
 
           <div className="mt-14 grid grid-cols-2 gap-4 sm:gap-8 max-w-xl">
