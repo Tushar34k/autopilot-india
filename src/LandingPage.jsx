@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import BookingCTA from "./components/BookingCTA";
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
