@@ -165,7 +165,12 @@ export default function LandingPage() {
       {/* NAVBAR */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-[#09090b]/80 border-b border-zinc-800">
         <nav className="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2 font-bold tracking-tight text-lg">
+          <a
+            href="#top"
+            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); setMenuOpen(false); }}
+            aria-label="AutoPilot AI — back to top"
+            className="flex items-center gap-2 font-bold tracking-tight text-lg"
+          >
             <span className="relative inline-flex h-2.5 w-2.5">
               <span className="absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75 animate-ping"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#22c55e]"></span>
