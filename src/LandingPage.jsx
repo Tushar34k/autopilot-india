@@ -9,12 +9,14 @@ export default function LandingPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [form, setForm] = useState({
     name: "",
     email: "",
     businessType: "Real Estate",
     task: "",
     whatsapp: "",
+    website: "", // honeypot
   });
   const formRef = useRef(null);
 
