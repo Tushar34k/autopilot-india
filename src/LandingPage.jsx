@@ -496,34 +496,48 @@ export default function LandingPage() {
 
             {submitted ? (
               <div className="mt-10 border border-[#22c55e] bg-[#22c55e]/10 rounded-2xl p-8 text-center">
-                <div className="text-4xl">✓</div>
-                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Received! We'll WhatsApp you within 4 hours.</div>
+                <div className="text-4xl">✅</div>
+                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Got it! We'll WhatsApp you within 4 hours.</div>
                 <p className="mt-2 text-zinc-300">
                   Your free workflow breakdown is on its way.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="mt-8 grid sm:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} noValidate className="mt-8 grid sm:grid-cols-2 gap-4">
+                {/* Honeypot — hidden from real users */}
+                <div className="hidden" aria-hidden="true">
+                  <label>
+                    Website
+                    <input
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={form.website}
+                      onChange={(e) => setForm({ ...form, website: e.target.value })}
+                      name="website"
+                    />
+                  </label>
+                </div>
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Name</label>
                   <input
-                    required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="Your full name"
                   />
+                  {fieldErrors.name && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.name}</p>}
                 </div>
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Email</label>
                   <input
-                    required
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="you@company.com"
                   />
+                  {fieldErrors.email && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.email}</p>}
                 </div>
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Business Type</label>
@@ -539,31 +553,39 @@ export default function LandingPage() {
                     <option>Other</option>
                   </select>
                 </div>
+                <div className="sm:col-span-1">
+                  <label className="text-xs text-zinc-400 uppercase tracking-widest">WhatsApp number</label>
+                  <input
+                    type="tel"
+                    value={form.whatsapp}
+                    onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
+                    className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
+                    placeholder="10-digit mobile number"
+                  />
+                  {fieldErrors.whatsapp && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.whatsapp}</p>}
+                </div>
                 <div className="sm:col-span-2">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Biggest time-wasting task</label>
                   <textarea
-                    required
                     rows={3}
                     value={form.task}
                     onChange={(e) => setForm({ ...form, task: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="e.g. manually replying to lead inquiries on WhatsApp"
                   />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-zinc-400 uppercase tracking-widest">WhatsApp number</label>
-                  <input
-                    required
-                    type="tel"
-                    value={form.whatsapp}
-                    onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-                    className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
-                    placeholder="+91 98xxxxxxxx"
-                  />
+                  {fieldErrors.task && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.task}</p>}
                 </div>
                 {error && (
                   <div className="sm:col-span-2 border border-[#ef4444]/40 bg-[#ef4444]/10 rounded-xl px-4 py-3 text-sm text-[#ef4444]">
-                    {error}
+                    {error}{" "}
+                    <a
+                      href="https://wa.me/919421752757"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline font-semibold"
+                    >
+                      Message us on WhatsApp
+                    </a>
                   </div>
                 )}
                 <div className="sm:col-span-2">
@@ -572,7 +594,7 @@ export default function LandingPage() {
                     disabled={submitting}
                     className="w-full bg-[#22c55e] hover:bg-[#16a34a] disabled:opacity-60 disabled:cursor-not-allowed text-black font-bold py-4 rounded-xl text-lg transition-colors shadow-[0_0_40px_-10px_#22c55e]"
                   >
-                    {submitting ? "Sending…" : "Request My Free Audit"}
+                    {submitting ? "Sending..." : "Request My Free Audit"}
                   </button>
                 </div>
               </form>
