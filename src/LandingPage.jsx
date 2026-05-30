@@ -72,28 +72,54 @@ export default function LandingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  const validateForm = () => {
+    const errs = {};
+    const name = form.name.trim();
+    if (name.length < 2 || name.length > 100) errs.name = "Name must be 2-100 characters.";
+    const email = form.email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Enter a valid email address.";
+    const phone = form.whatsapp.replace(/\D/g, "").replace(/^91/, "");
+    if (!/^[6-9]\d{9}$/.test(phone)) errs.whatsapp = "Enter a valid 10-digit Indian mobile number.";
+    const msg = form.task.trim();
+    if (msg.length < 10 || msg.length > 1000) errs.task = "Message must be 10-1000 characters.";
+    return errs;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Honeypot — silently drop bots
+    if (form.website) {
+      setSubmitted(true);
+      return;
+    }
+    const errs = validateForm();
+    setFieldErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
     setSubmitting(true);
     setError("");
     try {
+      const phoneDigits = form.whatsapp.replace(/\D/g, "").replace(/^91/, "");
       const response = await fetch("https://hook.eu1.make.com/01krcu3e9zrlosgnp3holjiakykt4m7v", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.whatsapp,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: phoneDigits,
           businessType: form.businessType,
-          message: form.task,
+          message: form.task.trim(),
+          source: "autopilot-india-landing",
+          submittedAt: new Date().toISOString(),
         }),
       });
-      if (response.ok || response.status === 200) {
-        setSubmitted(true);
-        setForm({ name: "", email: "", businessType: "Real Estate", task: "", whatsapp: "" });
-      } else {
-        setError("Something went wrong. Please try WhatsApp instead.");
-      }
+      if (!response.ok) throw new Error("Request failed");
+      setSubmitted(true);
+      setForm({ name: "", email: "", businessType: "Real Estate", task: "", whatsapp: "", website: "" });
+      setFieldErrors({});
+      setTimeout(() => setSubmitted(false), 8000);
     } catch {
-      setError("Something went wrong. Please try WhatsApp instead.");
+      setError("Something went wrong. Please WhatsApp us directly.");
     } finally {
       setSubmitting(false);
     }
