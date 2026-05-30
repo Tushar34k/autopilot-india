@@ -489,6 +489,17 @@ export default function LandingPage() {
                   />
                 </div>
                 <div className="sm:col-span-1">
+                  <label className="text-xs text-zinc-400 uppercase tracking-widest">Email</label>
+                  <input
+                    required
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
+                    placeholder="you@company.com"
+                  />
+                </div>
+                <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Business Type</label>
                   <select
                     value={form.businessType}
