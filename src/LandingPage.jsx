@@ -11,6 +11,7 @@ export default function LandingPage() {
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
+    email: "",
     businessType: "Real Estate",
     task: "",
     whatsapp: "",
