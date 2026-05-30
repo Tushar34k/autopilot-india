@@ -70,8 +70,6 @@ export default function LandingPage() {
 
   const toggleFlip = (k) => setFlipped((s) => ({ ...s, [k]: !s[k] }));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
   const validateForm = () => {
     const errs = {};
     const name = form.name.trim();
