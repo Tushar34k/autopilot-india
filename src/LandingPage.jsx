@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import BookingCTA from "./components/BookingCTA";
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -189,6 +190,7 @@ export default function LandingPage() {
             <button onClick={scrollToForm} className="bg-[#22c55e] hover:bg-[#16a34a] text-black font-semibold px-4 py-2 rounded-full text-sm transition-colors">
               Get Free Audit
             </button>
+            <BookingCTA location="navbar" />
           </div>
           <button className="md:hidden text-zinc-200" onClick={() => setMenuOpen((s) => !s)} aria-label="Toggle menu">
             <div className="space-y-1.5">
@@ -208,6 +210,7 @@ export default function LandingPage() {
             <button onClick={scrollToForm} className="w-full bg-[#22c55e] text-black font-semibold py-2 rounded-full">
               Get Free Audit
             </button>
+            <BookingCTA location="navbar_mobile" className="w-full" />
           </div>
         )}
       </header>
@@ -247,6 +250,7 @@ export default function LandingPage() {
             <a href="#how" onClick={scrollTo("how")} className="border border-zinc-700 hover:border-[#22c55e] hover:text-[#22c55e] text-zinc-200 font-semibold px-6 py-3.5 rounded-full transition-colors text-center">
               See How It Works
             </a>
+            <BookingCTA location="hero" />
           </div>
 
           <div className="mt-14 grid grid-cols-2 gap-4 sm:gap-8 max-w-xl">
@@ -658,6 +662,21 @@ export default function LandingPage() {
               <p className="mt-3 text-zinc-400 leading-relaxed text-sm sm:text-base">{item.a}</p>
             </details>
           ))}
+        </div>
+      </section>
+
+      {/* BOOKING CTA BAND */}
+      <section className="border-t border-zinc-900 bg-zinc-900/30">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-20 text-center">
+          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">
+            Still Not Sure? <span className="text-[#f97316]">Talk to a Human.</span>
+          </h2>
+          <p className="mt-3 text-zinc-400 max-w-xl mx-auto">
+            Book a free 15-minute discovery call. No pitch, no pressure — just honest advice on what you should automate first.
+          </p>
+          <div className="mt-8">
+            <BookingCTA location="footer_band" />
+          </div>
         </div>
       </section>
 
