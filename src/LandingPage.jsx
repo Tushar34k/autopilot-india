@@ -190,6 +190,7 @@ export default function LandingPage() {
             <button onClick={scrollToForm} className="bg-[#22c55e] hover:bg-[#16a34a] text-black font-semibold px-4 py-2 rounded-full text-sm transition-colors">
               Get Free Audit
             </button>
+            <BookingCTA location="navbar" />
           </div>
           <button className="md:hidden text-zinc-200" onClick={() => setMenuOpen((s) => !s)} aria-label="Toggle menu">
             <div className="space-y-1.5">
