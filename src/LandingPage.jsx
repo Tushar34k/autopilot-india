@@ -665,6 +665,21 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* BOOKING CTA BAND */}
+      <section className="border-t border-zinc-900 bg-zinc-900/30">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-20 text-center">
+          <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">
+            Still Not Sure? <span className="text-[#f97316]">Talk to a Human.</span>
+          </h2>
+          <p className="mt-3 text-zinc-400 max-w-xl mx-auto">
+            Book a free 15-minute discovery call. No pitch, no pressure — just honest advice on what you should automate first.
+          </p>
+          <div className="mt-8">
+            <BookingCTA location="footer_band" />
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="border-t border-zinc-900 px-5 sm:px-8 py-12">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 justify-between">
