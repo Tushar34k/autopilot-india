@@ -165,7 +165,12 @@ export default function LandingPage() {
       {/* NAVBAR */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-[#09090b]/80 border-b border-zinc-800">
         <nav className="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2 font-bold tracking-tight text-lg">
+          <a
+            href="#top"
+            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); setMenuOpen(false); }}
+            aria-label="AutoPilot AI — back to top"
+            className="flex items-center gap-2 font-bold tracking-tight text-lg"
+          >
             <span className="relative inline-flex h-2.5 w-2.5">
               <span className="absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75 animate-ping"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#22c55e]"></span>
@@ -669,12 +674,18 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-6 text-sm text-zinc-400">
-            <a href="#" className="hover:text-[#22c55e]">Privacy Policy</a>
-            <a href="#" className="hover:text-[#22c55e]">Terms</a>
+            <button onClick={scrollToForm} className="text-left hover:text-[#22c55e]">Privacy Policy</button>
+            <button onClick={scrollToForm} className="text-left hover:text-[#22c55e]">Terms</button>
             <a href="#audit" onClick={scrollTo("audit")} className="hover:text-[#22c55e]">Contact</a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-[#22c55e] inline-flex items-center gap-2">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM10 9h3.8v1.7h.06c.53-1 1.83-2.06 3.77-2.06C21.4 8.64 22 11 22 14.07V21h-4v-6.16c0-1.47-.03-3.36-2.05-3.36-2.05 0-2.36 1.6-2.36 3.25V21h-4z"/></svg>
-              LinkedIn
+            <a
+              href="https://wa.me/919421752757"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Message AutoPilot AI on WhatsApp"
+              className="hover:text-[#22c55e] inline-flex items-center gap-2"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zM10 9h3.8v1.7h.06c.53-1 1.83-2.06 3.77-2.06C21.4 8.64 22 11 22 14.07V21h-4v-6.16c0-1.47-.03-3.36-2.05-3.36-2.05 0-2.36 1.6-2.36 3.25V21h-4z"/></svg>
+              WhatsApp
             </a>
           </div>
         </div>
@@ -719,7 +730,7 @@ export default function LandingPage() {
 
       {/* Floating WhatsApp contact button */}
       <a
-        href="https://wa.me/9421752757"
+        href="https://wa.me/919421752757"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
