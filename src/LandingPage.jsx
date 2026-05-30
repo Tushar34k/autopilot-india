@@ -9,12 +9,14 @@ export default function LandingPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [form, setForm] = useState({
     name: "",
     email: "",
     businessType: "Real Estate",
     task: "",
     whatsapp: "",
+    website: "", // honeypot
   });
   const formRef = useRef(null);
 
@@ -68,30 +70,54 @@ export default function LandingPage() {
 
   const toggleFlip = (k) => setFlipped((s) => ({ ...s, [k]: !s[k] }));
 
+  const validateForm = () => {
+    const errs = {};
+    const name = form.name.trim();
+    if (name.length < 2 || name.length > 100) errs.name = "Name must be 2-100 characters.";
+    const email = form.email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Enter a valid email address.";
+    const phone = form.whatsapp.replace(/\D/g, "").replace(/^91/, "");
+    if (!/^[6-9]\d{9}$/.test(phone)) errs.whatsapp = "Enter a valid 10-digit Indian mobile number.";
+    const msg = form.task.trim();
+    if (msg.length < 10 || msg.length > 1000) errs.task = "Message must be 10-1000 characters.";
+    return errs;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Honeypot — silently drop bots
+    if (form.website) {
+      setSubmitted(true);
+      return;
+    }
+    const errs = validateForm();
+    setFieldErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
     setSubmitting(true);
     setError("");
     try {
+      const phoneDigits = form.whatsapp.replace(/\D/g, "").replace(/^91/, "");
       const response = await fetch("https://hook.eu1.make.com/01krcu3e9zrlosgnp3holjiakykt4m7v", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.whatsapp,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: phoneDigits,
           businessType: form.businessType,
-          message: form.task,
+          message: form.task.trim(),
+          source: "autopilot-india-landing",
+          submittedAt: new Date().toISOString(),
         }),
       });
-      if (response.ok || response.status === 200) {
-        setSubmitted(true);
-        setForm({ name: "", email: "", businessType: "Real Estate", task: "", whatsapp: "" });
-      } else {
-        setError("Something went wrong. Please try WhatsApp instead.");
-      }
+      if (!response.ok) throw new Error("Request failed");
+      setSubmitted(true);
+      setForm({ name: "", email: "", businessType: "Real Estate", task: "", whatsapp: "", website: "" });
+      setFieldErrors({});
+      setTimeout(() => setSubmitted(false), 8000);
     } catch {
-      setError("Something went wrong. Please try WhatsApp instead.");
+      setError("Something went wrong. Please WhatsApp us directly.");
     } finally {
       setSubmitting(false);
     }
@@ -470,34 +496,48 @@ export default function LandingPage() {
 
             {submitted ? (
               <div className="mt-10 border border-[#22c55e] bg-[#22c55e]/10 rounded-2xl p-8 text-center">
-                <div className="text-4xl">✓</div>
-                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Received! We'll WhatsApp you within 4 hours.</div>
+                <div className="text-4xl">✅</div>
+                <div className="mt-3 text-xl font-semibold text-[#22c55e]">Got it! We'll WhatsApp you within 4 hours.</div>
                 <p className="mt-2 text-zinc-300">
                   Your free workflow breakdown is on its way.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="mt-8 grid sm:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} noValidate className="mt-8 grid sm:grid-cols-2 gap-4">
+                {/* Honeypot — hidden from real users */}
+                <div className="hidden" aria-hidden="true">
+                  <label>
+                    Website
+                    <input
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={form.website}
+                      onChange={(e) => setForm({ ...form, website: e.target.value })}
+                      name="website"
+                    />
+                  </label>
+                </div>
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Name</label>
                   <input
-                    required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="Your full name"
                   />
+                  {fieldErrors.name && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.name}</p>}
                 </div>
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Email</label>
                   <input
-                    required
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="you@company.com"
                   />
+                  {fieldErrors.email && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.email}</p>}
                 </div>
                 <div className="sm:col-span-1">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Business Type</label>
@@ -513,31 +553,39 @@ export default function LandingPage() {
                     <option>Other</option>
                   </select>
                 </div>
+                <div className="sm:col-span-1">
+                  <label className="text-xs text-zinc-400 uppercase tracking-widest">WhatsApp number</label>
+                  <input
+                    type="tel"
+                    value={form.whatsapp}
+                    onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
+                    className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
+                    placeholder="10-digit mobile number"
+                  />
+                  {fieldErrors.whatsapp && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.whatsapp}</p>}
+                </div>
                 <div className="sm:col-span-2">
                   <label className="text-xs text-zinc-400 uppercase tracking-widest">Biggest time-wasting task</label>
                   <textarea
-                    required
                     rows={3}
                     value={form.task}
                     onChange={(e) => setForm({ ...form, task: e.target.value })}
                     className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
                     placeholder="e.g. manually replying to lead inquiries on WhatsApp"
                   />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="text-xs text-zinc-400 uppercase tracking-widest">WhatsApp number</label>
-                  <input
-                    required
-                    type="tel"
-                    value={form.whatsapp}
-                    onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-                    className="mt-2 w-full bg-zinc-900 border border-zinc-800 focus:border-[#22c55e] outline-none rounded-xl px-4 py-3 text-zinc-100"
-                    placeholder="+91 98xxxxxxxx"
-                  />
+                  {fieldErrors.task && <p className="mt-1 text-xs text-[#ef4444]">{fieldErrors.task}</p>}
                 </div>
                 {error && (
                   <div className="sm:col-span-2 border border-[#ef4444]/40 bg-[#ef4444]/10 rounded-xl px-4 py-3 text-sm text-[#ef4444]">
-                    {error}
+                    {error}{" "}
+                    <a
+                      href="https://wa.me/919421752757"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline font-semibold"
+                    >
+                      Message us on WhatsApp
+                    </a>
                   </div>
                 )}
                 <div className="sm:col-span-2">
@@ -546,7 +594,7 @@ export default function LandingPage() {
                     disabled={submitting}
                     className="w-full bg-[#22c55e] hover:bg-[#16a34a] disabled:opacity-60 disabled:cursor-not-allowed text-black font-bold py-4 rounded-xl text-lg transition-colors shadow-[0_0_40px_-10px_#22c55e]"
                   >
-                    {submitting ? "Sending…" : "Request My Free Audit"}
+                    {submitting ? "Sending..." : "Request My Free Audit"}
                   </button>
                 </div>
               </form>
